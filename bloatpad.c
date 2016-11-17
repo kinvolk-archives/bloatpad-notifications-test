@@ -659,15 +659,24 @@ BloatPad *
 bloat_pad_new (void)
 {
   BloatPad *bloat_pad;
+  gchar *app_id;
+  const gchar *notification_backend_name;
 
   g_set_application_name ("Bloatpad");
 
+  notification_backend_name = g_getenv ("GNOTIFICATION_BACKEND");
+  if (notification_backend_name)
+    app_id = g_strdup_printf("org.gtk.bloatpad-%s", notification_backend_name);
+  else
+    app_id = g_strdup ("org.gtk.bloatpad");
+
   bloat_pad = g_object_new (bloat_pad_get_type (),
-                            "application-id", "org.gtk.bloatpad",
+                            "application-id", app_id,
                             "flags", G_APPLICATION_HANDLES_OPEN,
                             "inactivity-timeout", 30000,
                             "register-session", TRUE,
                             NULL);
+  g_free (app_id);
 
   return bloat_pad;
 }
