@@ -4,4 +4,10 @@
   <gresource prefix="/org/gtk/bloatpad">
     <file preprocess="xml-stripblanks">gtk/menus.ui</file>
   </gresource>
+  <gresource prefix="/org/gtk/bloatpad-gtk">
+    <file preprocess="xml-stripblanks">gtk/menus.ui</file>
+  </gresource>
+  <gresource prefix="/org/gtk/bloatpad-freedesktop">
+    <file preprocess="xml-stripblanks">gtk/menus.ui</file>
+  </gresource>
 </gresources>
