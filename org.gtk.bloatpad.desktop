@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=BloatPad-%GNB%
+Comment=BLLLLLOOOOOATPAAAAAAD
+Type=Application
+Exec=env GNOTIFICATION_BACKEND=%GNB% bloatpad
+Icon=gedit
+Categories=Utility;
