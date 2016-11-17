@@ -3,3 +3,5 @@
 
 /bloatpad
 /bloatpad-gresources.c
+/org.gtk.bloatpad-gtk.desktop
+/org.gtk.bloatpad-freedesktop.desktop

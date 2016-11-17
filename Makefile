@@ -1,3 +1,6 @@
+# make vars:
+# DESTDIR - where to put/remove files during install/uninstall
+
 all: bloatpad org.gtk.bloatpad-gtk.desktop org.gtk.bloatpad-freedesktop.desktop
 
 bloatpad-gresources.c: bloatpad.gresources.xml gtk/menus.ui
@@ -7,7 +10,7 @@ bloatpad-gresources.c: bloatpad.gresources.xml gtk/menus.ui
 	$(CC) -c -Wall -o $@ `pkg-config --cflags gtk+-3.0` $<
 
 bloatpad: bloatpad.o bloatpad-gresources.o
-	$(CC) -o $@ `pkg-config --libs gtk+-3.0` $<
+	$(CC) -o $@ $^ `pkg-config --libs gtk+-3.0`
 
 clean:
 	NULL= rm -f \
@@ -29,6 +32,9 @@ install: all
 	if test ! -d $(DESTDIR)/usr/share/applications; then mkdir -p $(DESTDIR)/usr/share/applications; fi
 	install --mode=0644 org.gtk.bloatpad-gtk.desktop org.gtk.bloatpad-freedesktop.desktop $(DESTDIR)/usr/share/applications
 
+install-gsettings:
+	SETTING=`gsettings get org.gnome.shell icon-grid-layout | sed -e "s/\('desktop': \[\)/\1'org.gtk.bloatpad-gtk.desktop', 'org.gtk.bloatpad-freedesktop.desktop', /"` && gsettings set org.gnome.shell icon-grid-layout "$${SETTING}"
+
 uninstall:
 	NULL= rm -f \
 		$(DESTDIR)/usr/bin/bloatpad \
@@ -36,4 +42,8 @@ uninstall:
 		$(DESTDIR)/usr/share/applications/org.gtk.bloatpad-freedesktop.desktop \
 		$${NULL}
 
-.PHONY: all clean install uninstall
+uninstall-gsettings:
+	SETTING=`gsettings get org.gnome.shell icon-grid-layout | sed -e "s/'org.gtk.bloatpad-gtk.desktop', 'org.gtk.bloatpad-freedesktop.desktop', //"` && gsettings set org.gnome.shell icon-grid-layout "$${SETTING}"
+
+
+.PHONY: all clean install uninstall install-gsettings uninstall-gsettings
