@@ -1,0 +1,5 @@
+*~
+*.o
+
+/bloatpad
+/bloatpad-gresources.c
