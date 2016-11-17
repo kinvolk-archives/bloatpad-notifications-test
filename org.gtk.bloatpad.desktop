@@ -6,3 +6,5 @@ Type=Application
 Exec=env GNOTIFICATION_BACKEND=%GNB% bloatpad
 Icon=gedit
 Categories=Utility;
+DBusActivatable=true
+StartupNotify=true
