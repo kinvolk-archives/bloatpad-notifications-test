@@ -155,7 +155,7 @@ text_buffer_changed_cb (GtkTextBuffer *buffer,
 {
   GtkWindow *window = user_data;
   BloatPad *app;
-  gint old_n, n;
+  gint old_l, new_l, n;
 
   app = (BloatPad *) gtk_window_get_application (window);
 
@@ -188,17 +188,25 @@ text_buffer_changed_cb (GtkTextBuffer *buffer,
   else
     g_action_map_remove_action (G_ACTION_MAP (window), "spell-check");
 
-  old_n = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (buffer), "line-count"));
-  n = gtk_text_buffer_get_line_count (buffer);
-  g_object_set_data (G_OBJECT (buffer), "line-count", GINT_TO_POINTER (n));
+  old_l = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (buffer), "line-count"));
+  new_l = gtk_text_buffer_get_line_count (buffer);
+  g_object_set_data (G_OBJECT (buffer), "line-count", GINT_TO_POINTER (new_l));
 
-  if (old_n < 3 && n == 3)
+  if ((old_l < new_l) && ((new_l % 3) == 0))
     {
       GNotification *n;
-      n = g_notification_new ("Three lines of text");
-      g_notification_set_body (n, "Keep up the good work!");
+      gchar *txt;
+
+      txt = g_strdup_printf ("%d lines of text", new_l);
+      n = g_notification_new (txt);
+      g_free (txt);
+      txt = g_strdup_printf ("Keep up the good work! Got %d lines!", new_l);
+      g_notification_set_body (n, txt);
+      g_free (txt);
       g_notification_add_button (n, "Start over", "app.clear-all");
-      g_application_send_notification (G_APPLICATION (app), "three-lines", n);
+      txt = g_strdup_printf ("%d-lines", new_l);
+      g_application_send_notification (G_APPLICATION (app), txt, n);
+      g_free (txt);
       g_object_unref (n);
     }
 }
