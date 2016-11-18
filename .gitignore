@@ -3,7 +3,7 @@
 
 /bloatpad
 /bloatpad-gresources.c
-/org.gtk.bloatpad-gtk.desktop
-/org.gtk.bloatpad-freedesktop.desktop
-/org.gtk.bloatpad-gtk.service
-/org.gtk.bloatpad-freedesktop.service
+/org.gtk.bloatpad_gtk.desktop
+/org.gtk.bloatpad_freedesktop.desktop
+/org.gtk.bloatpad_gtk.service
+/org.gtk.bloatpad_freedesktop.service

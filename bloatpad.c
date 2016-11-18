@@ -666,7 +666,7 @@ bloat_pad_new (void)
 
   notification_backend_name = g_getenv ("GNOTIFICATION_BACKEND");
   if (notification_backend_name)
-    app_id = g_strdup_printf("org.gtk.bloatpad-%s", notification_backend_name);
+    app_id = g_strdup_printf("org.gtk.bloatpad_%s", notification_backend_name);
   else
     app_id = g_strdup ("org.gtk.bloatpad");
 
