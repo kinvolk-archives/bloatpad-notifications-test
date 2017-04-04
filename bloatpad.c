@@ -150,6 +150,34 @@ activate_clear_all (GSimpleAction *action,
 }
 
 static void
+activate_stuff (GSimpleAction *action,
+                GVariant      *parameter,
+                gpointer       user_data)
+{
+  GtkWindow *window = GTK_WINDOW (user_data);
+  GtkTextView *text = g_object_get_data ((GObject*)window, "bloatpad-text");
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer (text);
+  GtkTextIter end;
+  gsize stuff_len;
+  const gchar *stuff = g_variant_get_string (parameter, &stuff_len);
+
+  gtk_text_buffer_get_end_iter (buffer, &end);
+  gtk_text_buffer_insert (buffer, &end, stuff, stuff_len);
+}
+
+static void
+activate_add_stuff (GSimpleAction *action,
+                    GVariant      *parameter,
+                    gpointer       user_data)
+{
+  GtkApplication *app = GTK_APPLICATION (user_data);
+  GList *iter;
+
+  for (iter = gtk_application_get_windows (app); iter; iter = iter->next)
+    g_action_group_activate_action (iter->data, "stuff", parameter);
+}
+
+static void
 text_buffer_changed_cb (GtkTextBuffer *buffer,
                         gpointer       user_data)
 {
@@ -204,6 +232,7 @@ text_buffer_changed_cb (GtkTextBuffer *buffer,
       g_notification_set_body (n, txt);
       g_free (txt);
       g_notification_add_button (n, "Start over", "app.clear-all");
+      g_notification_set_default_action_and_target (n, "app.add-stuff", "s", "stuff");
       txt = g_strdup_printf ("%d-lines", new_l);
       g_application_send_notification (G_APPLICATION (app), txt, n);
       g_free (txt);
@@ -217,8 +246,8 @@ static GActionEntry win_entries[] = {
   { "fullscreen", activate_toggle, NULL, "false", change_fullscreen_state },
   { "busy", activate_toggle, NULL, "false", change_busy_state },
   { "justify", activate_radio, "s", "'left'", change_justify_state },
-  { "clear", activate_clear, NULL, NULL, NULL }
-
+  { "clear", activate_clear, NULL, NULL, NULL },
+  { "stuff", activate_stuff, "s", NULL, NULL },
 };
 
 static void
@@ -495,7 +524,8 @@ static GActionEntry app_entries[] = {
   { "quit", quit_activated, NULL, NULL, NULL },
   { "edit-accels", edit_accels },
   { "time-active", NULL, NULL, "false", time_active_changed },
-  { "clear-all", activate_clear_all }
+  { "clear-all", activate_clear_all },
+  { "add-stuff", activate_add_stuff, "s", NULL, NULL },
 };
 
 static void
